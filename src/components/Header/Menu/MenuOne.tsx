@@ -474,7 +474,7 @@ const MenuOne: React.FC<Props> = ({ props }) => {
                                         </Link>
                                     </li>
                                     <li className='h-full relative'>
-                                        <Link href="/pages/urbangear" className={`text-button-uppercase duration-300 h-full flex items-center justify-center ${pathname.includes('/pages/urbangear') ? 'active' : ''}`}>
+                                        <Link href="/shop/urbangear" className={`text-button-uppercase duration-300 h-full flex items-center justify-center ${pathname.includes('/shop/urbangear') ? 'active' : ''}`}>
                                             Urban Gear
                                         </Link>
                                     </li>
@@ -932,7 +932,7 @@ const MenuOne: React.FC<Props> = ({ props }) => {
                                         className={`${openSubNavMobile === 6 ? 'open' : ''}`}
                                         onClick={() => handleOpenSubNavMobile(6)}
                                     >
-                                        <a href={'/pages/urbangear'} className='text-xl font-semibold flex items-center justify-between mt-5'>Urban Gear
+                                        <a href={'/shop/urbangear'} className='text-xl font-semibold flex items-center justify-between mt-5'>Urban Gear
                                             <span className='text-right'>
                                                 <Icon.CaretRight size={20} />
                                             </span>

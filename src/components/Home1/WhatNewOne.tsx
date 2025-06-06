@@ -1,21 +1,42 @@
-// components/Home1/WhatNewOne.tsx
 'use client'
 import React, { useEffect, useState } from 'react'
 import Product from '../Product/Product'
 import { motion } from 'framer-motion'
 import { ProductType, CategoryType } from '@/type/ProductType'
 
-const WhatNewOne = () => {
+// 👇 Define props interface
+interface Props {
+  data: any[] // Change to any[] to accept the raw product data
+  start: number
+  limit: number
+}
+
+// 👇 Add props typing
+const WhatNewOne: React.FC<Props> = ({ data, start, limit }) => {
   const [products, setProducts] = useState<ProductType[]>([])
   const [categories, setCategories] = useState<CategoryType[]>([])
   const [activeTab, setActiveTab] = useState<string>('all')
   const [loading, setLoading] = useState<boolean>(true)
 
+  // Map the raw product data to match ProductType
+  const mappedData = data.map(product => ({
+    id: product.id,
+    name: product.name,
+    price: product.price,
+    originPrice: product.originPrice,
+    sale: product.sale,
+    new: product.new,
+    image: product.images?.[0] || product.thumbImage?.[0] || "/images/product/1000x1000.png",
+    description: product.description,
+    category: product.category,
+    type: product.type
+  })) as ProductType[]
+
   // Fetch categories
   useEffect(() => {
     const fetchCategories = async () => {
       try {
-        const res = await fetch('https://www.thinkprint.shop/api/categories-api')   
+        const res = await fetch('https://www.thinkprint.shop/api/categories-api') 
         const result = await res.json()
         if (result.success && Array.isArray(result.data)) {
           setCategories(result.data.slice(0, 4))
@@ -28,11 +49,11 @@ const WhatNewOne = () => {
     fetchCategories()
   }, [])
 
-  // Fetch products
+  // Use API products + static fallback
   useEffect(() => {
     const fetchProducts = async () => {
       try {
-        const res = await fetch('https://www.thinkprint.shop/api/products-api')   
+        const res = await fetch('https://www.thinkprint.shop/api/products-api') 
         const result = await res.json()
 
         if (result.success && Array.isArray(result.data)) {
@@ -76,9 +97,19 @@ const WhatNewOne = () => {
 
   const tabs = ['ALL', ...categories.map(cat => cat.name)]
 
+  // Updated filtering logic to properly match category names with product types
   const filteredProducts = activeTab === 'all'
-    ? products
-    : products.filter(product => product.type === activeTab)
+    ? [...products, ...mappedData] // use both API and mapped static data
+    : [...products, ...mappedData].filter(product => {
+        // Convert both to lowercase and normalize for comparison
+        const normalizedType = product.type.toLowerCase().replace(/\s+/g, '-')
+        const normalizedActiveTab = activeTab.toLowerCase().replace(/\s+/g, '-')
+        
+        // Check if the product type matches the active tab
+        return normalizedType === normalizedActiveTab ||
+               // Also check if the category matches (for backward compatibility)
+               product.category.toLowerCase() === activeTab.toLowerCase()
+      })
 
   if (loading) {
     return <div className="text-center py-10">Loading...</div>
@@ -89,7 +120,6 @@ const WhatNewOne = () => {
       <div className="container mx-auto">
         <div className="heading flex flex-col items-center text-center">
         <div className="heading3">What{String.raw`'s`} new</div>
-
         </div>
 
         <div className="menu-tab flex items-center gap-2 p-1 bg-surface rounded-2xl mt-6 justify-center">
@@ -110,7 +140,7 @@ const WhatNewOne = () => {
         </div>
 
         <div className="list-product grid lg:grid-cols-4 sm:grid-cols-2 gap-6 md:mt-10 mt-6">
-          {filteredProducts.map((prd) => (
+          {filteredProducts.slice(start, limit).map((prd) => (
             <Product key={prd.id} data={prd} />
           ))}
         </div>

@@ -16,17 +16,19 @@ import Footer from '@/components/Footer/Footer'
 import ModalNewsletter from '@/components/Modal/ModalNewsletter'
 import SliderTwelve from '@/components/Slider/SliderTwelve'
 import Categories from '@/components/categories/Categories'
+import Menu from '@/components/Header/Menu/Menu'
+import CategoryHome from '@/components/categories/CategoryHome'
 
 export default function Home() {
   return (
     <>
       <TopNavOne props="style-one bg-black" slogan="🎉 Free Shipping on Bulk Orders" />
       <div id="header" className='relative w-full'>
-        <MenuOne props="bg-transparent" />
+        <Menu props="bg-transparent" />
         {/* <SliderOne /> */}
         <SliderTwelve />
       </div>
-      <Categories />
+      <CategoryHome />
       <WhatNewOne data={productData} start={0} limit={12} />
       {/* <Collection /> */}
       

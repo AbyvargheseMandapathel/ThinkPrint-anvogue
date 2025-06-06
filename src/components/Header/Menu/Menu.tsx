@@ -247,7 +247,7 @@ const MenuOne: React.FC<Props> = ({ props }) => {
                                 <Icon.MagnifyingGlass size={24} color='black' onClick={openModalSearch} />
                                 <div className="line absolute bg-line w-px h-6 -right-6"></div>
                             </div>
-                            <div className="list-action flex items-center gap-4">
+                            {/* <div className="list-action flex items-center gap-4">
                                 <div className="user-icon flex items-center justify-center cursor-pointer">
                                     <Icon.User size={24} color='black' onClick={handleLoginPopup} />
                                     <div
@@ -270,7 +270,7 @@ const MenuOne: React.FC<Props> = ({ props }) => {
                                     <Icon.Handbag size={24} color='black' />
                                     <span className="quantity cart-quantity absolute -right-1.5 -top-1.5 text-xs text-white bg-black w-4 h-4 flex items-center justify-center rounded-full">{cartState.cartArray.length}</span>
                                 </div>
-                            </div>
+                            </div> */}
                         </div>
                     </div>
                 </div>

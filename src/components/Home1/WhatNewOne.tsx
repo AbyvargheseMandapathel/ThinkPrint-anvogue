@@ -1,26 +1,21 @@
+// components/Home1/WhatNewOne.tsx
 'use client'
-import React, { useState, useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import Product from '../Product/Product'
 import { motion } from 'framer-motion'
+import { ProductType, CategoryType } from '@/type/ProductType'
 
-// Define ProductType based on your interface
-import { ProductType } from '@/type/ProductType'
-
-interface Props {
-  data: ProductType[]
-  start: number
-  limit: number
-}
-
-const WhatNewOne: React.FC<Props> = ({ data, start, limit }) => {
+const WhatNewOne = () => {
+  const [products, setProducts] = useState<ProductType[]>([])
+  const [categories, setCategories] = useState<CategoryType[]>([])
   const [activeTab, setActiveTab] = useState<string>('all')
-  const [categories, setCategories] = useState<{ id: number; name: string }[]>([])
+  const [loading, setLoading] = useState<boolean>(true)
 
-  // Fetch categories for tabs
+  // Fetch categories
   useEffect(() => {
     const fetchCategories = async () => {
       try {
-        const res = await fetch('https://www.thinkprint.shop/api/categories-api') 
+        const res = await fetch('https://www.thinkprint.shop/api/categories-api')   
         const result = await res.json()
         if (result.success && Array.isArray(result.data)) {
           setCategories(result.data.slice(0, 4))
@@ -33,6 +28,48 @@ const WhatNewOne: React.FC<Props> = ({ data, start, limit }) => {
     fetchCategories()
   }, [])
 
+  // Fetch products
+  useEffect(() => {
+    const fetchProducts = async () => {
+      try {
+        const res = await fetch('https://www.thinkprint.shop/api/products-api')   
+        const result = await res.json()
+
+        if (result.success && Array.isArray(result.data)) {
+          const formattedProducts = result.data.map((item: { 
+            id: number;
+            title: string;
+            price: number;
+            origin_price?: number;
+            sale?: boolean;
+            new?: boolean;
+            image: string;
+            short_description?: string;
+            category_name: string;
+          }) => ({
+            id: item.id.toString(),
+            name: item.title,
+            price: item.price,
+            originPrice: item.origin_price || item.price,
+            sale: item.sale || false,
+            new: item.new || false,
+            image: item.image,
+            description: item.short_description || '',
+            category: 'fashion',
+            type: item.category_name.toLowerCase().replace(/\s+/g, '-'),
+          }))
+          setProducts(formattedProducts)
+        }
+      } catch (error) {
+        console.error("Error fetching products:", error)
+      } finally {
+        setLoading(false)
+      }
+    }
+
+    fetchProducts()
+  }, [])
+
   const handleTabClick = (type: string) => {
     setActiveTab(type.toLowerCase())
   }
@@ -40,18 +77,19 @@ const WhatNewOne: React.FC<Props> = ({ data, start, limit }) => {
   const tabs = ['ALL', ...categories.map(cat => cat.name)]
 
   const filteredProducts = activeTab === 'all'
-    ? data.filter(product => product.category === 'fashion')
-    : data.filter(
-        product =>
-          product.category === 'fashion' &&
-          product.type.toLowerCase() === activeTab
-      )
+    ? products
+    : products.filter(product => product.type === activeTab)
+
+  if (loading) {
+    return <div className="text-center py-10">Loading...</div>
+  }
 
   return (
     <div className="whate-new-block md:pt-20 pt-10">
       <div className="container mx-auto">
         <div className="heading flex flex-col items-center text-center">
         <div className="heading3">What{String.raw`'s`} new</div>
+
         </div>
 
         <div className="menu-tab flex items-center gap-2 p-1 bg-surface rounded-2xl mt-6 justify-center">
@@ -72,8 +110,8 @@ const WhatNewOne: React.FC<Props> = ({ data, start, limit }) => {
         </div>
 
         <div className="list-product grid lg:grid-cols-4 sm:grid-cols-2 gap-6 md:mt-10 mt-6">
-          {filteredProducts.slice(start, limit).map((prd) => (
-            <Product key={prd.id} data={prd} type='grid' style='style-1' />
+          {filteredProducts.map((prd) => (
+            <Product key={prd.id} data={prd} />
           ))}
         </div>
       </div>

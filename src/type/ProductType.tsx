@@ -1,19 +1,18 @@
-interface Variation {
-    color: string;
-    colorCode: string;
-    colorImage: string;
-    image: string;
-}
-
-export interface ProductType {
+// type/ProductType.ts
+export interface CategoryType {
+    id: number;
+    name: string;
+  }
+  
+  export interface ProductType {
     id: string;
     name: string;
-    new: boolean;
-    sale: boolean;
     price: number;
     originPrice: number;
+    sale: boolean;
+    new: boolean;
     image: string;
     description: string;
     category: string;
-    type: string;
-}
+    type: string; // this will match category.name.toLowerCase()
+  }

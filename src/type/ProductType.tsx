@@ -11,8 +11,10 @@ export interface CategoryType {
     originPrice: number;
     sale: boolean;
     new: boolean;
-    image: string;
+    images: string;
     description: string;
     category: string;
+    subcategory: string;
+    design: string;
     type: string; // this will match category.name.toLowerCase()
   }

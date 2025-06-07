@@ -1,20 +1,16 @@
+// components/Product/Product.tsx
 'use client'
 import React from 'react'
 import Image from 'next/image'
 import Link from 'next/link'
+import { ProductType } from '@/type/ProductType'
 
 interface Props {
-  data: {
-    id: string;
-    name: string;
-    description: string;
-    image: string;
-    sale?: boolean;
-    new?: boolean;
-  }
+  data: ProductType
+  type?: 'grid' | 'list' | 'detail'
 }
 
-const Product: React.FC<Props> = ({ data }) => {
+const Product: React.FC<Props> = ({ data, type = 'grid' }) => {
   const truncateDescription = (desc: string) =>
     desc.length > 30 ? `${desc.slice(0, 30)}...` : desc
 
@@ -23,18 +19,18 @@ const Product: React.FC<Props> = ({ data }) => {
       {/* Product Image */}
       <div className="relative aspect-[3/4] overflow-hidden">
         <Image
-          src={data.image}
+          src={data.images?.[0] || '/images/no-image.png'}
           alt={data.name}
           fill
           className="object-cover object-center transition-transform duration-500 group-hover:scale-110"
         />
         {data.sale && (
-          <div className="absolute top-3 left-3 rounded-full bg-red px-3 py-1 text-xs font-bold uppercase text-white">
+          <div className="absolute top-3 left-3 rounded-full bg-red-500 px-3 py-1 text-xs font-bold uppercase text-white">
             Sale
           </div>
         )}
         {data.new && (
-          <div className="absolute top-3 left-3 rounded-full bg-green px-3 py-1 text-xs font-bold uppercase text-white">
+          <div className="absolute top-3 left-3 rounded-full bg-green-500 px-3 py-1 text-xs font-bold uppercase text-white">
             New
           </div>
         )}
@@ -44,8 +40,14 @@ const Product: React.FC<Props> = ({ data }) => {
       <div className="p-4">
         <h3 className="heading6 mb-2 line-clamp-1">{data.name}</h3>
         <p className="text-secondary text-sm min-h-[2rem]">
-          {truncateDescription(data.description)}
+          {truncateDescription(data.description || '')}
         </p>
+        <div className="mt-2 flex items-center justify-between">
+          <span className="text-lg font-semibold">${data.price?.toFixed(2)}</span>
+          {data.originPrice && data.originPrice > data.price && (
+            <span className="text-sm text-gray-500 line-through">${data.originPrice.toFixed(2)}</span>
+          )}
+        </div>
       </div>
 
       {/* View More Button on Hover */}

@@ -104,7 +104,15 @@ const Default: React.FC<Props> = ({ data, productId }) => {
         }
         openModalCart()
     };
-
+    const parseDesignSpecifications = (designString: string | undefined) => {
+        if (!designString) return []
+      
+        const lines = designString.split('\n')
+        return lines.map(line => {
+          const [key, value] = line.split('\t')
+          return { key, value }
+        })
+      }
     const handleAddToWishlist = () => {
         // if product existed in wishlit, remove from wishlist and set state to false
         if (wishlistState.wishlistArray.some(item => item.id === productMain.id)) {
@@ -261,46 +269,49 @@ const Default: React.FC<Props> = ({ data, productId }) => {
                                 </div>
                             </div>
                             
-                            {/* Description and About This Products - Desktop View (Right of Image) */}
-                            <div className="md:block hidden mt-6">
-                                <div className='grid gap-8 gap-y-5'>
-                                    <div className="description-section">
-                                        <div className="heading6">Description</div>
-                                        <div className="text-secondary mt-2">Keep your home organized, yet elegant with storage cabinets by Onita Patio Furniture. These cabinets not only make a great storage units, but also bring a great decorative accent to your decor. Traditionally designed, they are perfect to be used in the hallway, living room, bedroom, office or any place where you need to store or display things. Made of high quality materials, they are sturdy and durable for years. Bring one-of-a-kind look to your interior with furniture from Onita Furniture!</div>
-                                    </div>
-                                    <div className="about-section">
-                                        <div className="heading6">About This Products</div>
-                                        <div className="list-feature">
-                                            <div className="item flex gap-1 text-secondary mt-1">
-                                                <Icon.Dot size={28} />
-                                                <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
-                                            </div>
-                                            <div className="item flex gap-1 text-secondary mt-1">
-                                                <Icon.Dot size={28} />
-                                                <p>Nulla luctus libero quis mauris vestibulum dapibus.</p>
-                                            </div>
-                                            <div className="item flex gap-1 text-secondary mt-1">
-                                                <Icon.Dot size={28} />
-                                                <p>Maecenas ullamcorper erat mi, vel consequat enim suscipit at.</p>
-                                            </div>
-                                            <div className="item flex gap-1 text-secondary mt-1">
-                                                <Icon.Dot size={28} />
-                                                <p>Quisque consectetur nibh ac urna molestie scelerisque.</p>
-                                            </div>
-                                            <div className="item flex gap-1 text-secondary mt-1">
-                                                <Icon.Dot size={28} />
-                                                <p>Mauris in nisl scelerisque massa consectetur pretium sed et mauris.</p>
-                                            </div>
-                                        </div>
-                                        <button 
-                                            className="button-main mt-4 px-5 py-3 rounded-lg"
-                                            onClick={handleEnquireNow}
-                                        >
-                                            Enquire Now
-                                        </button>
-                                    </div>
-                                </div>
-                            </div>
+                      {/* Description and About This Products - Desktop View */}
+<div className="md:block hidden mt-6">
+  <div className='grid gap-8 gap-y-5'>
+    <div className="description-section">
+      <div className="heading6">Description</div>
+      <div className="text-secondary mt-2">{productMain.description}</div>
+    </div>
+
+    <div className="about-section">
+      <div className="heading6">About This Product</div>
+      <div className="list-feature">
+        {/* Dynamic Design Specifications */}
+        {productMain.design && (
+          parseDesignSpecifications(productMain.design).map((spec, index) => (
+            <div key={index} className="item flex gap-1 text-secondary mt-1">
+              <Icon.Dot size={28} />
+              <p>
+                <strong>{spec.key}:</strong> {spec.value || 'N/A'}
+              </p>
+            </div>
+          ))
+        )}
+
+        {/* Fallback if no design specs */}
+        {!productMain.design && (
+          <div className="item flex gap-1 text-secondary mt-1">
+            <Icon.Dot size={28} />
+            <p>No additional specifications available.</p>
+          </div>
+        )}
+      </div>
+
+      <button 
+        className="button-main mt-4 px-5 py-3 rounded-lg"
+        onClick={handleEnquireNow}
+      >
+        Enquire Now
+      </button>
+    </div>
+  </div>
+</div>
+
+                                       
                         </div>
                     </div>
                 </div>
@@ -311,32 +322,56 @@ const Default: React.FC<Props> = ({ data, productId }) => {
                         <div className='grid gap-8 gap-y-5'>
                             <div className="description-section">
                                 <div className="heading6">Description</div>
-                                <div className="text-secondary mt-2">Keep your home organized, yet elegant with storage cabinets by Onita Patio Furniture. These cabinets not only make a great storage units, but also bring a great decorative accent to your decor. Traditionally designed, they are perfect to be used in the hallway, living room, bedroom, office or any place where you need to store or display things. Made of high quality materials, they are sturdy and durable for years. Bring one-of-a-kind look to your interior with furniture from Onita Furniture!</div>
+                                <div className="text-secondary mt-2">{productMain.description}</div>
                             </div>
                             <div className="about-section">
-                                <div className="heading6">About This Products</div>
-                                <div className="list-feature">
-                                    <div className="item flex gap-1 text-secondary mt-1">
-                                        <Icon.Dot size={28} />
-                                        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
-                                    </div>
-                                    <div className="item flex gap-1 text-secondary mt-1">
-                                        <Icon.Dot size={28} />
-                                        <p>Nulla luctus libero quis mauris vestibulum dapibus.</p>
-                                    </div>
-                                    <div className="item flex gap-1 text-secondary mt-1">
-                                        <Icon.Dot size={28} />
-                                        <p>Maecenas ullamcorper erat mi, vel consequat enim suscipit at.</p>
-                                    </div>
-                                    <div className="item flex gap-1 text-secondary mt-1">
-                                        <Icon.Dot size={28} />
-                                        <p>Quisque consectetur nibh ac urna molestie scelerisque.</p>
-                                    </div>
-                                    <div className="item flex gap-1 text-secondary mt-1">
-                                        <Icon.Dot size={28} />
-                                        <p>Mauris in nisl scelerisque massa consectetur pretium sed et mauris.</p>
-                                    </div>
-                                </div>
+  <div className="heading6">About This Product</div>
+  <div className="list-feature">
+    {/* Dynamic Design Specifications */}
+    {productMain.design && (
+      parseDesignSpecifications(productMain.design).map((spec, index) => (
+        <div key={index} className="item flex gap-1 text-secondary mt-1">
+          <Icon.Dot size={28} />
+          <p>
+            <strong>{spec.key}:</strong> {spec.value}
+          </p>
+        </div>
+      ))
+    )}
+
+    {/* Optional Static Fallback */}
+    {!productMain.design && (
+      <>
+        <div className="item flex gap-1 text-secondary mt-1">
+          <Icon.Dot size={28} />
+          <p>No additional specifications available.</p>
+        </div>
+      </>
+    )}
+
+    {/* Optional: Keep static examples hidden when design specs exist */}
+    {productMain.design ? null : (
+      <>
+        <div className="item flex gap-1 text-secondary mt-1">
+          <Icon.Dot size={28} />
+          <p>Nulla luctus libero quis mauris vestibulum dapibus.</p>
+        </div>
+        <div className="item flex gap-1 text-secondary mt-1">
+          <Icon.Dot size={28} />
+          <p>Maecenas ullamcorper erat mi, vel consequat enim suscipit at.</p>
+        </div>
+        <div className="item flex gap-1 text-secondary mt-1">
+          <Icon.Dot size={28} />
+          <p>Quisque consectetur nibh ac urna molestie scelerisque.</p>
+        </div>
+        <div className="item flex gap-1 text-secondary mt-1">
+          <Icon.Dot size={28} />
+          <p>Mauris in nisl scelerisque massa consectetur pretium sed et mauris.</p>
+        </div>
+      </>
+    )}
+  </div>
+
                                 <button 
                                     className="button-main mt-4 px-5 py-3 rounded-lg"
                                     onClick={handleEnquireNow}

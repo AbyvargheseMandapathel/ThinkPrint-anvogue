@@ -53,7 +53,7 @@ const ProductDefault = () => {
           quantityPurchase: 1,
           sizes: [],
           variation: [],
-          thumbImage: [item.image || '/images/no-image.png'],
+          images: [item.image || '/images/no-image.png'],
           images: [item.image || '/images/no-image.png'],
           action: 'Add to Cart',
           slug: item.title.toLowerCase().replace(/\s+/g, '-') + '-' + item.id,

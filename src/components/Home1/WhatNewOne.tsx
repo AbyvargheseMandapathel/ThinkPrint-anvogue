@@ -26,7 +26,7 @@ const WhatNewOne: React.FC<Props> = ({ data, start, limit }) => {
     originPrice: product.originPrice,
     sale: product.sale,
     new: product.new,
-    image: product.images?.[0] || product.thumbImage?.[0] || "/images/product/1000x1000.png",
+    image: product.images?.[0] || product.images?.[0] || "/images/product/1000x1000.png",
     description: product.description,
     category: product.category,
     type: product.type

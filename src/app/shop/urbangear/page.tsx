@@ -46,7 +46,7 @@ export default function Default() {
                         quantityPurchase: 0,
                         sizes: [],
                         variation: [],
-                        thumbImage: [item.image],
+                        images: [item.image],
                         images: [item.image],
                         action: '',
                         slug: ''

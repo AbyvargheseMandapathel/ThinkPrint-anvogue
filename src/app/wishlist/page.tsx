@@ -63,7 +63,7 @@ const Wishlist = () => {
             quantityPurchase: 0,
             sizes: [],
             variation: [],
-            thumbImage: [],
+            images: [],
             images: [],
             description: 'no-data',
             action: 'no-data',

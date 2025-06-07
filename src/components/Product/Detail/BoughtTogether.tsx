@@ -417,10 +417,10 @@ const BoughtTogether: React.FC<Props> = ({ data, productId }) => {
                                     {data.slice(Number(productId), Number(productId) + 3).map((item) => (
                                         <Image
                                             key={item.id}
-                                            src={item.thumbImage[1]}
+                                            src={item.images[1]}
                                             width={300}
                                             height={330}
-                                            alt={item.thumbImage[1]}
+                                            alt={item.images[1]}
                                             className='w-[100px] aspect-[3/4] object-cover rounded-lg'
                                         />
                                     ))}

@@ -29,10 +29,10 @@ export default function HomeCosmeticOne() {
             </div>
             <Collection />
             <CommunityStory />
-            <LookBook data={productData} start={8} limit={12} />
+            {/* <LookBook data={productData} start={8} limit={12} /> */}
             <BuyPack />
             <AdsPhoto />
-            <NewArrival data={productData} start={0} limit={8} />
+            {/* <NewArrival data={productData} start={0} limit={8} /> */}
             <Benefit props="md:py-20 py-10" />
             <Testimonial />
             <Newsletter props="bg-transparent" />

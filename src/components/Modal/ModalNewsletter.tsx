@@ -62,7 +62,7 @@ const ModalNewsletter = () => {
                                                 onClick={() => handleDetailProduct(item.id)}
                                             >
                                                 <div className="bg-img flex-shrink-0">
-                                                    <Image width={5000} height={5000} src={item.thumbImage[0]} alt={item.name}
+                                                    <Image width={5000} height={5000} src={item.images[0]} alt={item.name}
                                                         className='w-[100px] aspect-square flex-shrink-0 rounded-lg' />
                                                 </div>
                                                 <div className=''>

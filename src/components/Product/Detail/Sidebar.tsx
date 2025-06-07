@@ -197,10 +197,10 @@ const Sidebar: React.FC<Props> = ({ data, productId }) => {
                                             onClick={() => handleProductClick(item.id)}
                                         >
                                             <Image
-                                                src={item.thumbImage[0]}
+                                                src={item.images[0]}
                                                 width={300}
                                                 height={500}
-                                                alt={item.thumbImage[0]}
+                                                alt={item.images[0]}
                                                 className='w-20 aspect-[3/4] object-cover rounded-lg flex-shrink-0'
                                             />
                                             <div>

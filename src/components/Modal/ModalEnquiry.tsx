@@ -14,10 +14,12 @@ const ModalEnquiry: React.FC<Props> = ({ data }) => {
     const [formData, setFormData] = useState({
         name: '',
         email: '',
+        phoneNumber: '',
         message: ''
     })
     const [isSubmitting, setIsSubmitting] = useState(false)
     const [submitSuccess, setSubmitSuccess] = useState(false)
+    const [submitError, setSubmitError] = useState('')
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
         const { name, value } = e.target
@@ -27,13 +29,32 @@ const ModalEnquiry: React.FC<Props> = ({ data }) => {
         }))
     }
 
-    const handleSubmit = (e: React.FormEvent) => {
+    const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault()
         setIsSubmitting(true)
+        setSubmitError('')
         
-        // Simulate form submission
-        setTimeout(() => {
-            setIsSubmitting(false)
+        try {
+            const response = await fetch('/api/product-enquiry', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    name: formData.name,
+                    email: formData.email,
+                    phoneNumber: formData.phoneNumber,
+                    message: formData.message,
+                    product: data?.name || 'Unknown Product'
+                })
+            })
+
+            const result = await response.json()
+            
+            if (!response.ok) {
+                throw new Error(result.error || 'Failed to submit enquiry')
+            }
+            
             setSubmitSuccess(true)
             
             // Reset form after success
@@ -43,10 +64,16 @@ const ModalEnquiry: React.FC<Props> = ({ data }) => {
                 setFormData({
                     name: '',
                     email: '',
-                    message: ''
+                    message: '',
+                    phoneNumber: ''
                 })
             }, 2000)
-        }, 1000)
+        } catch (error) {
+            console.error('Enquiry submission error:', error)
+            setSubmitError(error instanceof Error ? error.message : 'Failed to submit enquiry. Please try again.')
+        } finally {
+            setIsSubmitting(false)
+        }
     }
 
     return (
@@ -73,6 +100,11 @@ const ModalEnquiry: React.FC<Props> = ({ data }) => {
                         </div>
                     ) : (
                         <form onSubmit={handleSubmit} className="grid gap-4">
+                            {submitError && (
+                                <div className="error-message p-3 bg-red-50 text-red-600 rounded-lg">
+                                    <p>{submitError}</p>
+                                </div>
+                            )}
                             <div className="form-group">
                                 <label htmlFor="name" className="block mb-2 text-button">Name *</label>
                                 <input 
@@ -100,6 +132,19 @@ const ModalEnquiry: React.FC<Props> = ({ data }) => {
                                 />
                             </div>
                             <div className="form-group">
+                                <label htmlFor="phoneNumber" className="block mb-2 text-button">Phone Number *</label>
+                                <input 
+                                    type="tel" 
+                                    id="phoneNumber" 
+                                    name="phoneNumber" 
+                                    value={formData.phoneNumber}
+                                    onChange={handleChange}
+                                    className="border border-line px-4 py-3 w-full rounded-lg" 
+                                    placeholder="Your Phone Number" 
+                                    required 
+                                />
+                            </div>
+                            <div className="form-group">
                                 <label htmlFor="message" className="block mb-2 text-button">Message *</label>
                                 <textarea 
                                     id="message" 
@@ -112,10 +157,19 @@ const ModalEnquiry: React.FC<Props> = ({ data }) => {
                                 ></textarea>
                             </div>
                             <button 
-                                type="submit" 
-                                className="button-main w-full text-center mt-2"
-                                disabled={isSubmitting}
-                            >
+    type="submit" 
+    className="button-main w-full text-center mt-2"
+    style={{ backgroundColor: '#d2ef9a', color: 'black' }}
+    onMouseOver={(e) => {
+        e.currentTarget.style.backgroundColor = '#000000';
+        e.currentTarget.style.color = '#d2ef9a';
+    }}
+    onMouseOut={(e) => {
+        e.currentTarget.style.backgroundColor = '#d2ef9a';
+        e.currentTarget.style.color = '#000000';
+    }}
+    disabled={isSubmitting}
+>
                                 {isSubmitting ? 'Submitting...' : 'Submit Enquiry'}
                             </button>
                         </form>

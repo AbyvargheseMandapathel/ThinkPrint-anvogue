@@ -7,6 +7,7 @@ import MenuOne from '@/components/Header/Menu/MenuOne'
 import ShopBreadCrumbImg from '@/components/Shop/ShopBreadCrumbImg';
 import Footer from '@/components/Footer/Footer'
 import { ProductType, CategoryType } from '@/type/ProductType'
+import Menu from '@/components/Header/Menu/Menu'
 
 export default function Default() {
     const searchParams = useSearchParams()
@@ -78,9 +79,9 @@ export default function Default() {
 
     return (
         <>
-            <TopNavOne props="style-one bg-black" slogan="New customers save 10% with the code GET10" />
+            <TopNavOne props="style-one bg-black" slogan="🎉 Free Shipping on Bulk Orders" />
             <div id="header" className='relative w-full'>
-                <MenuOne props="bg-transparent" />
+            <Menu props="bg-transparent" />
             </div>
             <ShopBreadCrumbImg 
                 data={products} 

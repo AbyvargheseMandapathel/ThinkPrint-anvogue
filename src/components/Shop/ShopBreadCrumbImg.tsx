@@ -4,24 +4,29 @@ import React, { useState, useEffect } from 'react'
 import Image from 'next/image';
 import Link from 'next/link'
 import * as Icon from "@phosphor-icons/react/dist/ssr";
-import { ProductType } from '@/type/ProductType'
+import { ProductType, CategoryType } from '@/type/ProductType'
 import Product from '../Product/Product';
 import Slider from 'rc-slider';
 import 'rc-slider/assets/index.css'
 import HandlePagination from '../Other/HandlePagination';
+import { useRouter, useSearchParams } from 'next/navigation';
 
 interface Props {
     data: Array<ProductType>;
-    productPerPage: number
-    dataType: string | null
+    productPerPage: number;
+    dataType: string | null;
+    categories?: CategoryType[];
+    categoryFilter?: string | null;
 }
 
-const ShopBreadCrumbImg: React.FC<Props> = ({ data, productPerPage, dataType }) => {
+const ShopBreadCrumbImg: React.FC<Props> = ({ data, productPerPage, dataType, categories = [], categoryFilter }) => {
+    const router = useRouter();
     const [layoutCol, setLayoutCol] = useState<number | null>(4)
     const [showOnlySale, setShowOnlySale] = useState(false)
     const [sortOption, setSortOption] = useState('');
     const [openSidebar, setOpenSidebar] = useState(false)
     const [type, setType] = useState<string | null>(dataType)
+    const [category, setCategory] = useState<string | null>(categoryFilter)
     const [size, setSize] = useState<string | null>()
     const [color, setColor] = useState<string | null>()
     const [brand, setBrand] = useState<string | null>()
@@ -29,6 +34,11 @@ const ShopBreadCrumbImg: React.FC<Props> = ({ data, productPerPage, dataType }) 
     const [currentPage, setCurrentPage] = useState(0);
     const productsPerPage = productPerPage;
     const offset = currentPage * productsPerPage;
+
+    // Set category from URL parameter when component mounts or when categoryFilter changes
+    useEffect(() => {
+        setCategory(categoryFilter);
+    }, [categoryFilter]);
 
     const handleLayoutCol = (col: number) => {
         setLayoutCol(col)
@@ -52,6 +62,13 @@ const ShopBreadCrumbImg: React.FC<Props> = ({ data, productPerPage, dataType }) 
     const handleType = (type: string) => {
         setType((prevType) => (prevType === type ? null : type))
         setCurrentPage(0);
+        router.push(`/shop/default?type=${type}`);
+    }
+
+    const handleCategory = (categoryName: string) => {
+        setCategory((prevCategory) => (prevCategory === categoryName ? null : categoryName))
+        setCurrentPage(0);
+        router.push(`/shop/default?category=${encodeURIComponent(categoryName)}`);
     }
 
     const handleSize = (size: string) => {
@@ -76,7 +93,6 @@ const ShopBreadCrumbImg: React.FC<Props> = ({ data, productPerPage, dataType }) 
         setCurrentPage(0);
     }
 
-
     // Filter product
     let filteredData = data.filter(product => {
         let isShowOnlySaleMatched = true;
@@ -91,12 +107,19 @@ const ShopBreadCrumbImg: React.FC<Props> = ({ data, productPerPage, dataType }) 
 
         let isTypeMatched = true;
         if (type) {
-            dataType = type
             isTypeMatched = product.type === type;
         }
 
+        let isCategoryMatched = true;
+        if (category) {
+            // Normalize both for comparison (case-insensitive)
+            const normalizedProductCategory = product.category.toLowerCase();
+            const normalizedCategory = category.toLowerCase();
+            isCategoryMatched = normalizedProductCategory === normalizedCategory;
+        }
+
         let isSizeMatched = true;
-        if (size) {
+        if (size && product.sizes) {
             isSizeMatched = product.sizes.includes(size)
         }
 
@@ -106,7 +129,7 @@ const ShopBreadCrumbImg: React.FC<Props> = ({ data, productPerPage, dataType }) 
         }
 
         let isColorMatched = true;
-        if (color) {
+        if (color && product.variation) {
             isColorMatched = product.variation.some(item => item.color === color)
         }
 
@@ -115,7 +138,8 @@ const ShopBreadCrumbImg: React.FC<Props> = ({ data, productPerPage, dataType }) 
             isBrandMatched = product.brand === brand;
         }
 
-        return isShowOnlySaleMatched && isDataTypeMatched && isTypeMatched && isSizeMatched && isColorMatched && isBrandMatched && isPriceRangeMatched && product.category === 'fashion'
+        return isShowOnlySaleMatched && isDataTypeMatched && isTypeMatched && isCategoryMatched && 
+               isSizeMatched && isColorMatched && isBrandMatched && isPriceRangeMatched;
     })
 
     // Create a copy array filtered to sort
@@ -130,7 +154,6 @@ const ShopBreadCrumbImg: React.FC<Props> = ({ data, productPerPage, dataType }) 
             .sort((a, b) => (
                 (Math.floor(100 - ((b.price / b.originPrice) * 100))) - (Math.floor(100 - ((a.price / a.originPrice) * 100)))
             ))
-
     }
 
     if (sortOption === 'priceHighToLow') {
@@ -143,11 +166,12 @@ const ShopBreadCrumbImg: React.FC<Props> = ({ data, productPerPage, dataType }) 
 
     const totalProducts = filteredData.length
     const selectedType = type
+    const selectedCategory = category
     const selectedSize = size
     const selectedColor = color
     const selectedBrand = brand
 
-
+    // Provide a fallback product if no products match the filters
     if (filteredData.length === 0) {
         filteredData = [{
             id: 'no-data',
@@ -174,7 +198,6 @@ const ShopBreadCrumbImg: React.FC<Props> = ({ data, productPerPage, dataType }) 
         }];
     }
 
-
     // Find page number base on filteredData
     const pageCount = Math.ceil(filteredData.length / productsPerPage);
 
@@ -199,13 +222,13 @@ const ShopBreadCrumbImg: React.FC<Props> = ({ data, productPerPage, dataType }) 
     const handleClearAll = () => {
         setSortOption('');
         setType(null);
+        setCategory(null);
         setSize(null);
         setColor(null);
         setBrand(null);
         setPriceRange({ min: 0, max: 100 });
         setCurrentPage(0);
-        dataType = null
-        setType(dataType);
+        router.push('/shop/default');
     };
 
     return (
@@ -215,21 +238,25 @@ const ShopBreadCrumbImg: React.FC<Props> = ({ data, productPerPage, dataType }) 
                     <div className="container lg:pt-[134px] pt-24 pb-10 relative">
                         <div className="main-content w-full h-full flex flex-col items-center justify-center relative z-[1]">
                             <div className="text-content">
-                                <div className="heading2 text-center">{dataType === null ? 'Shop' : dataType}</div>
+                                <div className="heading2 text-center">
+                                    {selectedCategory || selectedType || 'Shop'}
+                                </div>
                                 <div className="link flex items-center justify-center gap-1 caption1 mt-3">
                                     <Link href={'/'}>Homepage</Link>
                                     <Icon.CaretRight size={14} className='text-secondary2' />
-                                    <div className='text-secondary2 capitalize'>{dataType === null ? 'Shop' : dataType}</div>
+                                    <div className='text-secondary2 capitalize'>
+                                        {selectedCategory || selectedType || 'Shop'}
+                                    </div>
                                 </div>
                             </div>
                             <div className="list-tab flex flex-wrap items-center justify-center gap-y-5 gap-8 lg:mt-[70px] mt-12 overflow-hidden">
-                                {['t-shirt', 'dress', 'top', 'swimwear', 'shirt'].map((item, index) => (
+                                {categories.map((cat, index) => (
                                     <div
                                         key={index}
-                                        className={`tab-item text-button-uppercase cursor-pointer has-line-before line-2px ${dataType === item ? 'active' : ''}`}
-                                        onClick={() => handleType(item)}
+                                        className={`tab-item text-button-uppercase cursor-pointer has-line-before line-2px ${selectedCategory === cat.name ? 'active' : ''}`}
+                                        onClick={() => handleCategory(cat.name)}
                                     >
-                                        {item}
+                                        {cat.name}
                                     </div>
                                 ))}
                             </div>
@@ -340,22 +367,26 @@ const ShopBreadCrumbImg: React.FC<Props> = ({ data, productPerPage, dataType }) 
                             className={`sidebar style-dropdown bg-white grid md:grid-cols-4 grid-cols-2 md:gap-[30px] gap-6 ${openSidebar ? 'open' : ''}`}
                         >
                             <div className="filter-type">
-                                <div className="heading6">Products Type</div>
+                                <div className="heading6">Categories</div>
                                 <div className="list-type mt-4">
-                                    {['t-shirt', 'dress', 'top', 'swimwear', 'shirt', 'underwear', 'sets', 'accessories'].map((item, index) => (
+                                    {categories.map((cat, index) => (
                                         <div
                                             key={index}
-                                            className={`item flex items-center justify-between cursor-pointer ${dataType === item ? 'active' : ''}`}
-                                            onClick={() => handleType(item)}
+                                            className={`item flex items-center justify-between cursor-pointer ${selectedCategory === cat.name ? 'active' : ''}`}
+                                            onClick={() => handleCategory(cat.name)}
                                         >
-                                            <div className='text-secondary has-line-before hover:text-black capitalize'>{item}</div>
+                                            <div className='text-secondary has-line-before hover:text-black capitalize'>{cat.name}</div>
                                             <div className='text-secondary2'>
-                                                ({data.filter(dataItem => dataItem.type === item && dataItem.category === 'fashion').length})
+                                                ({data.filter(dataItem => dataItem.category.toLowerCase() === cat.name.toLowerCase()).length})
                                             </div>
                                         </div>
                                     ))}
                                 </div>
                             </div>
+                            
+                            {/* Keep other filter sections as needed */}
+                            
+                            {/* Size filter section */}
                             <div>
                                 <div className="filter-size">
                                     <div className="heading6">Size</div>
@@ -405,148 +436,60 @@ const ShopBreadCrumbImg: React.FC<Props> = ({ data, productPerPage, dataType }) 
                                     </div>
                                 </div>
                             </div>
-                            <div className="filter-color">
-                                <div className="heading6">colors</div>
-                                <div className="list-color flex items-center flex-wrap gap-3 gap-y-4 mt-4">
-                                    <div
-                                        className={`color-item px-3 py-[5px] flex items-center justify-center gap-2 rounded-full border border-line ${color === 'pink' ? 'active' : ''}`}
-                                        onClick={() => handleColor('pink')}
-                                    >
-                                        <div className="color bg-[#F4C5BF] w-5 h-5 rounded-full"></div>
-                                        <div className="caption1 capitalize">pink</div>
-                                    </div>
-                                    <div
-                                        className={`color-item px-3 py-[5px] flex items-center justify-center gap-2 rounded-full border border-line ${color === 'red' ? 'active' : ''}`}
-                                        onClick={() => handleColor('red')}
-                                    >
-                                        <div className="color bg-red w-5 h-5 rounded-full"></div>
-                                        <div className="caption1 capitalize">red</div>
-                                    </div>
-                                    <div
-                                        className={`color-item px-3 py-[5px] flex items-center justify-center gap-2 rounded-full border border-line ${color === 'green' ? 'active' : ''}`}
-                                        onClick={() => handleColor('green')}
-                                    >
-                                        <div className="color bg-green w-5 h-5 rounded-full"></div>
-                                        <div className="caption1 capitalize">green</div>
-                                    </div>
-                                    <div
-                                        className={`color-item px-3 py-[5px] flex items-center justify-center gap-2 rounded-full border border-line ${color === 'yellow' ? 'active' : ''}`}
-                                        onClick={() => handleColor('yellow')}
-                                    >
-                                        <div className="color bg-yellow w-5 h-5 rounded-full"></div>
-                                        <div className="caption1 capitalize">yellow</div>
-                                    </div>
-                                    <div
-                                        className={`color-item px-3 py-[5px] flex items-center justify-center gap-2 rounded-full border border-line ${color === 'purple' ? 'active' : ''}`}
-                                        onClick={() => handleColor('purple')}
-                                    >
-                                        <div className="color bg-purple w-5 h-5 rounded-full"></div>
-                                        <div className="caption1 capitalize">purple</div>
-                                    </div>
-                                    <div
-                                        className={`color-item px-3 py-[5px] flex items-center justify-center gap-2 rounded-full border border-line ${color === 'black' ? 'active' : ''}`}
-                                        onClick={() => handleColor('black')}
-                                    >
-                                        <div className="color bg-black w-5 h-5 rounded-full"></div>
-                                        <div className="caption1 capitalize">black</div>
-                                    </div>
-                                    <div
-                                        className={`color-item px-3 py-[5px] flex items-center justify-center gap-2 rounded-full border border-line ${color === 'white' ? 'active' : ''}`}
-                                        onClick={() => handleColor('white')}
-                                    >
-                                        <div className="color bg-[#F6EFDD] w-5 h-5 rounded-full"></div>
-                                        <div className="caption1 capitalize">white</div>
-                                    </div>
+                            
+                            {/* Keep other filter sections as needed */}
+                            
+                            <div className="filter-btn flex items-center justify-center md:justify-start gap-5 md:col-span-4 col-span-2 flex-wrap mt-2">
+                                <div className="clear-btn button-main bg-white text-black border border-black cursor-pointer" onClick={handleClearAll}>Clear All</div>
+                            </div>
+                        </div>
+
+                        <div className="list-filtered flex items-center gap-3 flex-wrap mt-6">
+                            {selectedCategory && (
+                                <div className="filter-tag flex items-center gap-2 px-3 py-1.5 bg-surface rounded-full">
+                                    <div>Category: {selectedCategory}</div>
+                                    <Icon.X
+                                        size={14}
+                                        className='cursor-pointer'
+                                        onClick={() => handleCategory(selectedCategory)}
+                                    />
+                                </div>
+                            )}
+                            {/* Keep other filter tags as needed */}
+                        </div>
+
+                        <div className="list-product mt-10">
+                            <div className="heading flex items-center justify-between flex-wrap gap-5 pb-6">
+                                <div className="left">
+                                    <div className="text-caption1 text-secondary">Showing {currentProducts.length} of {totalProducts} Products</div>
                                 </div>
                             </div>
-                            <div className="filter-brand">
-                                <div className="heading6">Brands</div>
-                                <div className="list-brand mt-4">
-                                    {['adidas', 'hermes', 'zara', 'nike', 'gucci'].map((item, index) => (
-                                        <div key={index} className="brand-item flex items-center justify-between">
-                                            <div className="left flex items-center cursor-pointer">
-                                                <div className="block-input">
-                                                    <input
-                                                        type="checkbox"
-                                                        name={item}
-                                                        id={item}
-                                                        checked={brand === item}
-                                                        onChange={() => handleBrand(item)} />
-                                                    <Icon.CheckSquare size={20} weight='fill' className='icon-checkbox' />
-                                                </div>
-                                                <label htmlFor={item} className="brand-name capitalize pl-2 cursor-pointer">{item}</label>
-                                            </div>
-                                            <div className='text-secondary2'>
-                                                ({data.filter(dataItem => dataItem.brand === item && dataItem.category === 'fashion').length})
-                                            </div>
+                            <div className={`list-product-block grid lg:grid-cols-${layoutCol} grid-cols-2 md:gap-[30px] gap-3`}>
+                                {currentProducts.map((item) => (
+                                    item.id === 'no-data' ? (
+                                        <div key={item.id} className="no-data-product col-span-full text-center py-12">
+                                            <div className="text-button-uppercase">No products match the selected criteria</div>
                                         </div>
-                                    ))}
-                                </div>
+                                    ) : (
+                                        <Product key={item.id} data={item} type='grid' />
+                                    )
+                                ))}
+                            </div>
+                            <div className="pagination-block flex justify-center md:mt-10 mt-7">
+                                <HandlePagination
+                                    pageCount={pageCount}
+                                    onPageChange={handlePageChange}
+                                    currentPage={currentPage}
+                                    previousLabel={'Previous'}
+                                    nextLabel={'Next'}
+                                    containerClassName={'pagination-container flex flex-wrap items-center gap-2'}
+                                    pageClassName={'pagination-item flex items-center justify-center text-button w-8 h-8 rounded-full'}
+                                    activeClassName={'active'}
+                                    previousClassName={'pagination-item flex items-center justify-center text-button px-3 h-8 rounded-full'}
+                                    nextClassName={'pagination-item flex items-center justify-center text-button px-3 h-8 rounded-full'}
+                                />
                             </div>
                         </div>
-
-                        <div className="list-filtered flex items-center gap-3 mt-4">
-                            <div className="total-product">
-                                {totalProducts}
-                                <span className='text-secondary pl-1'>Products Found</span>
-                            </div>
-                            {
-                                (selectedType || selectedSize || selectedColor || selectedBrand) && (
-                                    <>
-                                        <div className="list flex items-center gap-3">
-                                            <div className='w-px h-4 bg-line'></div>
-                                            {selectedType && (
-                                                <div className="item flex items-center px-2 py-1 gap-1 bg-linear rounded-full capitalize" onClick={() => { setType(null) }}>
-                                                    <Icon.X className='cursor-pointer' />
-                                                    <span>{selectedType}</span>
-                                                </div>
-                                            )}
-                                            {selectedSize && (
-                                                <div className="item flex items-center px-2 py-1 gap-1 bg-linear rounded-full capitalize" onClick={() => { setSize(null) }}>
-                                                    <Icon.X className='cursor-pointer' />
-                                                    <span>{selectedSize}</span>
-                                                </div>
-                                            )}
-                                            {selectedColor && (
-                                                <div className="item flex items-center px-2 py-1 gap-1 bg-linear rounded-full capitalize" onClick={() => { setColor(null) }}>
-                                                    <Icon.X className='cursor-pointer' />
-                                                    <span>{selectedColor}</span>
-                                                </div>
-                                            )}
-                                            {selectedBrand && (
-                                                <div className="item flex items-center px-2 py-1 gap-1 bg-linear rounded-full capitalize" onClick={() => { setBrand(null) }}>
-                                                    <Icon.X className='cursor-pointer' />
-                                                    <span>{selectedBrand}</span>
-                                                </div>
-                                            )}
-                                        </div>
-                                        <div
-                                            className="clear-btn flex items-center px-2 py-1 gap-1 rounded-full border border-red cursor-pointer"
-                                            onClick={handleClearAll}
-                                        >
-                                            <Icon.X color='rgb(219, 68, 68)' className='cursor-pointer' />
-                                            <span className='text-button-uppercase text-red'>Clear All</span>
-                                        </div>
-                                    </>
-                                )
-                            }
-                        </div>
-
-                        <div className={`list-product hide-product-sold grid lg:grid-cols-${layoutCol} sm:grid-cols-3 grid-cols-2 sm:gap-[30px] gap-[20px] mt-7`}>
-                            {currentProducts.map((item) => (
-                                item.id === 'no-data' ? (
-                                    <div key={item.id} className="no-data-product">No products match the selected criteria.</div>
-                                ) : (
-                                    <Product key={item.id} data={item} type='grid' />
-                                )
-                            ))}
-                        </div>
-
-                        {pageCount > 1 && (
-                            <div className="list-pagination flex items-center justify-center md:mt-10 mt-7">
-                                <HandlePagination pageCount={pageCount} onPageChange={handlePageChange} />
-                            </div>
-                        )}
                     </div>
                 </div>
             </div>

@@ -60,7 +60,7 @@ const CategoryHome = () => {
                                 ].map((category: any, index: number) => (
                                     <SwiperSlide key={`slide-${category.id}-${index}`} virtualIndex={category.id}>
                                         <Link
-                                            href={`/shop/breadcrumb1?category=${encodeURIComponent(category.name)}`}
+                                            href={`/shop/default?category=${encodeURIComponent(category.name)}`}
                                             className="trending-item block relative cursor-pointer"
                                         >
                                             <div className="bg-img rounded-full overflow-hidden">

@@ -3,59 +3,58 @@ import React from 'react'
 import Image from 'next/image'
 import Link from 'next/link'
 
-interface Props {
+interface ProductProps {
   data: {
-    id: string;
-    name: string;
-    description: string;
-    image: string;
-    sale?: boolean;
-    new?: boolean;
+    id: number;
+    title: string;
+    short_description: string;
+    image?: string;
   }
 }
 
-const Product: React.FC<Props> = ({ data }) => {
-  const truncateDescription = (desc: string) =>
-    desc.length > 30 ? `${desc.slice(0, 30)}...` : desc
+const Product: React.FC<ProductProps> = ({ data }) => {
+  const truncateDescription = (desc: string) => {
+    if (!desc) return '';
+    return desc.length > 50 ? `${desc.slice(0, 50)}...` : desc;
+  };
+
+  const imageSrc = data.image || '/images/placeholder.jpg';
 
   return (
     <div className="product-card group relative overflow-hidden rounded-2xl bg-white shadow-md transition-transform duration-300 hover:shadow-xl">
       {/* Product Image */}
       <div className="relative aspect-[3/4] overflow-hidden">
-        <Image
-          src={data.image}
-          alt={data.name}
-          fill
-          className="object-cover object-center transition-transform duration-500 group-hover:scale-110"
+        <img
+          src={imageSrc}
+          alt={data.title}
+          onError={(e) => {
+            e.currentTarget.src = '/images/fallback-product.png';
+            e.currentTarget.alt = 'Product image not available';
+          }}
+          className="w-full h-full object-cover"
         />
-        {data.sale && (
-          <div className="absolute top-3 left-3 rounded-full bg-red px-3 py-1 text-xs font-bold uppercase text-white">
-            Sale
-          </div>
-        )}
-        {data.new && (
-          <div className="absolute top-3 left-3 rounded-full bg-green px-3 py-1 text-xs font-bold uppercase text-white">
-            New
-          </div>
-        )}
       </div>
 
       {/* Product Info */}
       <div className="p-4">
-        <h3 className="heading6 mb-2 line-clamp-1">{data.name}</h3>
-        <p className="text-secondary text-sm min-h-[2rem]">
-          {truncateDescription(data.description)}
+        <h3 className="text-sm font-semibold line-clamp-1">{data.title}</h3>
+        <p className="text-secondary text-sm min-h-[2rem] mt-2">
+          {truncateDescription(data.short_description)}
         </p>
       </div>
 
-      {/* View More Button on Hover */}
-      <Link href={`/product/default?id=${data.id}`} className="absolute inset-0 z-10 hidden items-center justify-center bg-black/50 opacity-0 transition-opacity duration-300 group-hover:flex group-hover:opacity-100">
-        <button className="rounded-full bg-white px-6 py-2 text-sm font-semibold text-black transition-colors hover:bg-gray-200">
+      {/* Hover Overlay with Buttons */}
+      <div className="absolute inset-0 z-10 hidden items-center justify-center gap-3 bg-black/50 opacity-0 transition-opacity duration-300 group-hover:flex group-hover:opacity-100">
+        <Link
+          href={`/product/${data.id}`}
+          className="rounded-full bg-white px-5 py-2 text-sm font-semibold text-black transition-colors hover:bg-gray-200"
+          aria-label={`View details for ${data.title}`}
+        >
           View More
-        </button>
-      </Link>
+        </Link>
+      </div>
     </div>
-  )
-}
+  );
+};
 
 export default Product

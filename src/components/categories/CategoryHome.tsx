@@ -75,7 +75,7 @@ const CategoryHome = () => {
                                             </div>
                                             <div className="trending-name text-center mt-5 duration-500">
                                                 <span className='heading5'>{category.name}</span>
-                                                <span className='text-secondary'> (12)</span>
+                                                {/* <span className='text-secondary'> (12)</span> */}
                                             </div>
                                         </Link>
                                     </SwiperSlide>

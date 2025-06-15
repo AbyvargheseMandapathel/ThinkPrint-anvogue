@@ -22,5 +22,5 @@ export interface CategoryType {
     brand: string;
     sold: number;
     color:string
-    type: string; // this will match category.name.toLowerCase()
+    type: string; 
   }

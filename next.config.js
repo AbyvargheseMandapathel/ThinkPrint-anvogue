@@ -17,6 +17,13 @@ const nextConfig = {
       
       {
         protocol: 'https',
+        hostname: 'anvogue.vercel.app',
+        port: '',
+        pathname: '**',
+      },
+      
+      {
+        protocol: 'https',
         hostname: 'www.thinkprint.shop',
         port: '',
         pathname: '**',

@@ -182,7 +182,7 @@ const ShopBreadCrumbImg: React.FC<Props> = ({
 
             {/* Background image */}
             <div className="bg-img absolute top-2 -right-6 max-lg:bottom-0 max-lg:top-auto w-1/3 max-lg:w-[26%] z-[0] max-sm:w-[45%]">
-              <Image src="/images/slider/bg1-1.png" width={1000} height={1000} alt="" />
+              <Image src="https://anvogue.vercel.app/_next/image?url=%2Fimages%2Fslider%2Fbg1-1.png&w=2048&q=75" width={1000} height={1000} alt="" />
             </div>
           </div>
         </div>

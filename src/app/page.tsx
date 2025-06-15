@@ -25,8 +25,7 @@ export default function Home() {
       <TopNavOne props="style-one bg-black" slogan="🎉 Free Shipping on Bulk Orders" />
       <div id="header" className='relative w-full'>
         <Menu props="bg-transparent" />
-        {/* <SliderOne /> */}
-        <SliderTwelve />
+        <SliderOne />
       </div>
       <CategoryHome />
       <WhatNewOne data={productData} start={0} limit={12} />

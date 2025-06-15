@@ -1,4 +1,5 @@
 'use client'
+
 import React, { useState, useEffect } from 'react'
 import Image from 'next/image'
 import Link from 'next/link'
@@ -17,36 +18,35 @@ interface Props {
 }
 
 const MenuOne: React.FC<Props> = ({ props }) => {
-    const router = useRouter()
-    const pathname = usePathname()
+    const router = useRouter();
+    const pathname = usePathname();
 
     // State for categories and subcategories
     const [categoryGroups, setCategoryGroups] = useState<any[]>([]);
 
     // UI states
-    const [selectedType, setSelectedType] = useState<string | null>()
-    const { openLoginPopup, handleLoginPopup } = useLoginPopup()
-    const { openMenuMobile, handleMenuMobile } = useMenuMobile()
-    const [openSubNavMobile, setOpenSubNavMobile] = useState<number | null>(null)
-    const { openModalCart } = useModalCartContext()
-    const { cartState } = useCart()
-    const { openModalWishlist } = useModalWishlistContext()
-    const { openModalSearch } = useModalSearchContext()
-    const [fixedHeader, setFixedHeader] = useState(false)
-    const [lastScrollPosition, setLastScrollPosition] = useState(0)
+    const [selectedType, setSelectedType] = useState<string | null>();
+    const { openLoginPopup, handleLoginPopup } = useLoginPopup();
+    const { openMenuMobile, handleMenuMobile } = useMenuMobile();
+    const [openSubNavMobile, setOpenSubNavMobile] = useState<number | null>(null);
+    const { openModalCart } = useModalCartContext();
+    const { cartState } = useCart();
+    const { openModalWishlist } = useModalWishlistContext();
+    const { openModalSearch } = useModalSearchContext();
+    const [fixedHeader, setFixedHeader] = useState(false);
+    const [lastScrollPosition, setLastScrollPosition] = useState(0);
 
     // Fetch and combine data on mount
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const categoriesRes = await fetch('https://www.thinkprint.shop/api/categories-api');
-                const subcategoriesRes = await fetch('https://www.thinkprint.shop/api/subcategories-api');
-
+                const categoriesRes = await fetch('https://www.thinkprint.shop/api/categories-api'); 
+                const subcategoriesRes = await fetch('https://www.thinkprint.shop/api/subcategories-api'); 
                 const categoriesData = await categoriesRes.json();
                 const subcategoriesData = await subcategoriesRes.json();
 
+                // Create a map to associate categories with their subcategories
                 const categoryMap: { [key: number]: any } = {};
-
                 categoriesData.data.forEach((cat: any) => {
                     categoryMap[cat.id] = {
                         ...cat,
@@ -60,7 +60,14 @@ const MenuOne: React.FC<Props> = ({ props }) => {
                     }
                 });
 
-                setCategoryGroups(Object.values(categoryMap));
+                // Convert the map to an array
+                let categoryArray = Object.values(categoryMap);
+
+                // Sort categories by the number of subcategories in descending order
+                categoryArray.sort((a, b) => b.subcategories.length - a.subcategories.length);
+
+                // Update the state with sorted categories
+                setCategoryGroups(categoryArray);
             } catch (error) {
                 console.error("Failed to load categories", error);
             }
@@ -83,21 +90,21 @@ const MenuOne: React.FC<Props> = ({ props }) => {
 
     // Navigation handlers
     const handleGenderClick = (gender: string) => {
-        router.push(`/shop/breadcrumb1?gender=${gender}`);
+        router.push(`/shop/default?gender=${gender}`);
     };
 
     const handleCategoryClick = (category: string) => {
-        router.push(`/shop/breadcrumb1?category=${category}`);
+        router.push(`/shop/default?category=${category}`);
     };
 
     const handleTypeClick = (type: string) => {
-        setSelectedType(type)
-        router.push(`/shop/breadcrumb1?type=${type}`);
+        setSelectedType(type);
+        router.push(`/shop/default?type=${type}`);
     };
 
     const handleOpenSubNavMobile = (index: number) => {
-        setOpenSubNavMobile(openSubNavMobile === index ? null : index)
-    }
+        setOpenSubNavMobile(openSubNavMobile === index ? null : index);
+    };
 
     return (
         <>
@@ -109,13 +116,11 @@ const MenuOne: React.FC<Props> = ({ props }) => {
                         <div className="menu-mobile-icon lg:hidden flex items-center" onClick={handleMenuMobile}>
                             <i className="icon-category text-2xl"></i>
                         </div>
-
                         {/* Left section: Logo + Main Nav */}
                         <div className="left flex items-center gap-16">
                             <Link href={'/'} className='flex items-center max-lg:absolute max-lg:left-1/2 max-lg:-translate-x-1/2'>
                                 <div className="heading4">ThinkPrint</div>
                             </Link>
-
                             {/* Desktop Mega Menu */}
                             <div className="menu-main h-full max-lg:hidden">
                                 <ul className='flex items-center gap-8 h-full'>
@@ -127,12 +132,10 @@ const MenuOne: React.FC<Props> = ({ props }) => {
                                             Home
                                         </Link>
                                     </li>
-
                                     <li className='h-full'>
                                         <Link href="" className='text-button-uppercase duration-300 h-full flex items-center justify-center'>
                                             Categories
                                         </Link>
-
                                         {/* Dynamic Mega Menu */}
                                         <div className="mega-menu absolute top-[74px] left-0 bg-white w-screen">
                                             <div className="container">
@@ -169,7 +172,6 @@ const MenuOne: React.FC<Props> = ({ props }) => {
                                                             </div>
                                                         ))}
                                                     </div>
-
                                                     {/* Banner Ads */}
                                                     <div className="banner-ads-block pl-2.5 basis-1/3">
                                                         <div className="banner-ads-item bg-linear rounded-2xl relative overflow-hidden cursor-pointer" onClick={() => handleTypeClick('swimwear')}>
@@ -209,7 +211,6 @@ const MenuOne: React.FC<Props> = ({ props }) => {
                                             </div>
                                         </div>
                                     </li>
-
                                     {/* Other Static Links */}
                                     <li className='h-full'>
                                         <Link
@@ -240,7 +241,6 @@ const MenuOne: React.FC<Props> = ({ props }) => {
                                 </ul>
                             </div>
                         </div>
-
                         {/* Right section: Search, User, Wishlist, Cart */}
                         <div className="right flex gap-12">
                             <div className="max-md:hidden search-icon flex items-center cursor-pointer relative">
@@ -255,7 +255,7 @@ const MenuOne: React.FC<Props> = ({ props }) => {
                                             ${openLoginPopup ? 'open' : ''}`}
                                     >
                                         <Link href={'/login'} className="button-main w-full text-center">Login</Link>
-                                        <div className="text-secondary text-center mt-3 pb-4">Don’t have an account?
+                                        <div className="text-secondary text-center mt-3 pb-4">Donâ€™t have an account?
                                             <Link href={'/register'} className='text-black pl-1 hover:underline'>Register</Link>
                                         </div>
                                         <Link href={'/my-account'} className="button-main bg-white text-black border border-black w-full text-center">Dashboard</Link>
@@ -275,7 +275,6 @@ const MenuOne: React.FC<Props> = ({ props }) => {
                     </div>
                 </div>
             </div>
-
             {/* Mobile Menu Drawer */}
             <div id="menu-mobile" className={`${openMenuMobile ? 'open' : ''}`}>
                 <div className="menu-container bg-white h-full">
@@ -291,13 +290,11 @@ const MenuOne: React.FC<Props> = ({ props }) => {
                                 </div>
                                 <Link href={'/'} className='logo text-3xl font-semibold text-center'>Thinkprint</Link>
                             </div>
-
                             {/* Search Bar */}
                             <div className="form-search relative mt-2">
                                 <Icon.MagnifyingGlass size={20} className='absolute left-3 top-1/2 -translate-y-1/2 cursor-pointer' />
                                 <input type="text" placeholder='What are you looking for?' className=' h-12 rounded-lg border border-line text-sm w-full pl-10 pr-4' />
                             </div>
-
                             {/* Mobile Nav Links */}
                             <div className="list-nav mt-6">
                                 <ul>
@@ -320,7 +317,6 @@ const MenuOne: React.FC<Props> = ({ props }) => {
                                             </div>
                                         </div>
                                     </li>
-
                                     {/* Mobile Categories */}
                                     <li
                                         className={`${openSubNavMobile === 2 ? 'open' : ''}`}
@@ -372,7 +368,6 @@ const MenuOne: React.FC<Props> = ({ props }) => {
                                                         </div>
                                                     ))}
                                                 </div>
-
                                                 {/* Mobile banners */}
                                                 <div className="banner-ads-block grid sm:grid-cols-2 items-center gap-6 pt-6">
                                                     <div className="banner-ads-item bg-linear rounded-2xl relative overflow-hidden" onClick={() => handleTypeClick('swimwear')}>
@@ -411,7 +406,6 @@ const MenuOne: React.FC<Props> = ({ props }) => {
                                             </div>
                                         </div>
                                     </li>
-
                                     {/* Static Mobile Items */}
                                     <li
                                         className={`${openSubNavMobile === 3 ? 'open' : ''}`}
@@ -486,7 +480,6 @@ const MenuOne: React.FC<Props> = ({ props }) => {
                     </div>
                 </div>
             </div>
-
             {/* Bottom Action Bar (Mobile Only) */}
             <div className="menu_bar fixed bg-white bottom-0 left-0 w-full h-[70px] sm:hidden z-[101]">
                 <div className="menu_bar-inner grid grid-cols-4 items-center h-full">
@@ -512,7 +505,7 @@ const MenuOne: React.FC<Props> = ({ props }) => {
                 </div>
             </div>
         </>
-    )
-}
+    );
+};
 
-export default MenuOne
+export default MenuOne;

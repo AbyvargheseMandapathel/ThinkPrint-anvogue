@@ -7,6 +7,7 @@ const ContactUs = () => {
     name: '',
     email: '',
     message: '',
+    phone:''
   })
 
   // UI state

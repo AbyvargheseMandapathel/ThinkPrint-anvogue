@@ -1,9 +1,10 @@
 'use client'
+
 import React from 'react'
 import Image from 'next/image'
 import Link from 'next/link'
 
-interface Props {
+interface ProductProps {
   data: {
     id: string;
     name: string;
@@ -14,20 +15,22 @@ interface Props {
   }
 }
 
-const Product: React.FC<Props> = ({ data }) => {
+const Product: React.FC<ProductProps> = ({ data }) => {
   const truncateDescription = (desc: string) =>
     desc.length > 30 ? `${desc.slice(0, 30)}...` : desc
 
   return (
     <div className="product-card group relative overflow-hidden rounded-2xl bg-white shadow-md transition-transform duration-300 hover:shadow-xl">
       {/* Product Image */}
-      <div className="relative aspect-[3/4] overflow-hidden">
+      <div className="relative aspect-[3/4] overflow-hidden bg-gray-100">
         <Image
           src={data.image}
           alt={data.name}
           fill
-          className="object-cover object-center transition-transform duration-500 group-hover:scale-110"
+          sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+          className="object-cover object-center transition-transform duration-500 group-hover:scale-105"
         />
+        {/* Badges like "Sale", "New" go here */}
         {data.sale && (
           <div className="absolute top-3 left-3 rounded-full bg-red px-3 py-1 text-xs font-bold uppercase text-white">
             Sale
@@ -49,7 +52,10 @@ const Product: React.FC<Props> = ({ data }) => {
       </div>
 
       {/* View More Button on Hover */}
-      <Link href={`/product/default?id=${data.id}`} className="absolute inset-0 z-10 hidden items-center justify-center bg-black/50 opacity-0 transition-opacity duration-300 group-hover:flex group-hover:opacity-100">
+      <Link
+        href={`/product/default?id=${encodeURIComponent(data.id)}`}
+        className="absolute inset-0 z-10 hidden items-center justify-center bg-black/50 opacity-0 transition-opacity duration-300 group-hover:flex group-hover:opacity-100"
+      >
         <button className="rounded-full bg-white px-6 py-2 text-sm font-semibold text-black transition-colors hover:bg-gray-200">
           View More
         </button>

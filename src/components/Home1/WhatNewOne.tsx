@@ -140,10 +140,10 @@ const WhatNewOne: React.FC<Props> = ({ data, start, limit }) => {
         </div>
 
         <div className="list-product grid lg:grid-cols-4 sm:grid-cols-2 gap-6 md:mt-10 mt-6">
-          {filteredProducts.slice(start, limit).map((prd) => (
-            <Product key={prd.id} data={prd} />
-          ))}
-        </div>
+  {filteredProducts.slice(start, limit).map((prd) => (
+    <Product key={prd.id} data={prd} />
+  ))}
+</div>
       </div>
     </div>
   )

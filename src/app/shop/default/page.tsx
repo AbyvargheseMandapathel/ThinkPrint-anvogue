@@ -3,7 +3,7 @@
 import React, { useState, useEffect } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
 import TopNavOne from '@/components/Header/TopNav/TopNavOne'
-import MenuOne from '@/components/Header/Menu/MenuOne'
+import Menu from '@/components/Header/Menu/Menu'
 import ShopBreadCrumbImg from '@/components/Shop/ShopBreadCrumbImg'
 import Footer from '@/components/Footer/Footer'
 import { ProductType, CategoryType } from '@/type/ProductType'
@@ -89,7 +89,7 @@ export default function Default() {
         <>
             <TopNavOne props="style-one bg-black" slogan="🎉 Free Shipping on Bulk Orders" />
             <div id="header" className='relative w-full'>
-                <MenuOne props="bg-transparent" />
+                <Menu props="bg-transparent" />
             </div>
             <ShopBreadCrumbImg
                 data={filteredProducts}

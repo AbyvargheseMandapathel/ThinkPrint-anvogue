@@ -3,7 +3,7 @@
 import React, { useEffect, useState } from 'react'
 import { useSearchParams } from 'next/navigation'
 import TopNavOne from '@/components/Header/TopNav/TopNavOne'
-import MenuOne from '@/components/Header/Menu/MenuOne'
+import Menu from '@/components/Header/Menu/Menu'
 import BreadcrumbProduct from '@/components/Breadcrumb/BreadcrumbProduct'
 import Default from '@/components/Product/Detail/Default'
 import Footer from '@/components/Footer/Footer'
@@ -77,7 +77,7 @@ const ProductDefault = () => {
     <>
       <TopNavOne props="style-one bg-black" slogan="🎉 Free Shipping on Bulk Orders" />
       <div id="header" className="relative w-full">
-        <MenuOne props="bg-white" />
+        <Menu props="bg-white" />
         <BreadcrumbProduct data={data} productPage="default" productId={productId} />
       </div>
 

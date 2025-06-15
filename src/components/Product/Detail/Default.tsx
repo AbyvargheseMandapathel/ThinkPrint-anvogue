@@ -145,6 +145,7 @@ const Default: React.FC<Props> = ({ data, productId }) => {
     }
 
     const handleEnquireNow = () => {
+        console.log("enquire now")
         openModalEnquiry(productMain)
     }
 

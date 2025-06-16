@@ -28,6 +28,13 @@ const nextConfig = {
         port: '',
         pathname: '**',
       },
+      
+      {
+        protocol: 'https',
+        hostname: 'cdn.thinkprint.shop',
+        port: '',
+        pathname: '/media/**', 
+      },
     ],
   },
   reactStrictMode: true,

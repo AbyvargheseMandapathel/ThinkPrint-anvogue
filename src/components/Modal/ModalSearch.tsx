@@ -19,7 +19,7 @@ const ModalSearch = () => {
     useEffect(() => {
         const fetchProducts = async () => {
             try {
-                const res = await fetch('https://www.thinkprint.shop/api/products-api')
+                const res = await fetch('/api/products-api')
                 const productsData = await res.json()
                 
                 if (productsData.success && Array.isArray(productsData.data)) {

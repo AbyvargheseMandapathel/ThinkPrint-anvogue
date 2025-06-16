@@ -21,7 +21,7 @@ const ProductDefault = () => {
   useEffect(() => {
     const fetchProducts = async () => {
       try {
-        const res = await fetch(`https://www.thinkprint.shop/api/products-api/`) 
+        const res = await fetch(`/api/products-api/`) 
         if (!res.ok) throw new Error('Failed to fetch products')
 
         const result = await res.json()

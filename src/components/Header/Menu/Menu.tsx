@@ -40,8 +40,8 @@ const MenuOne: React.FC<Props> = ({ props }) => {
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const categoriesRes = await fetch('https://www.thinkprint.shop/api/categories-api'); 
-                const subcategoriesRes = await fetch('https://www.thinkprint.shop/api/subcategories-api'); 
+                const categoriesRes = await fetch('/api/categories-api'); 
+                const subcategoriesRes = await fetch('/api/subcategories-api'); 
                 const categoriesData = await categoriesRes.json();
                 const subcategoriesData = await subcategoriesRes.json();
 

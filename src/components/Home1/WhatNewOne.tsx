@@ -36,7 +36,7 @@ const WhatNewOne: React.FC<Props> = ({ data, start, limit }) => {
   useEffect(() => {
     const fetchCategories = async () => {
       try {
-        const res = await fetch('https://www.thinkprint.shop/api/categories-api') 
+        const res = await fetch('/api/categories-api') 
         const result = await res.json()
         if (result.success && Array.isArray(result.data)) {
           setCategories(result.data.slice(0, 4))
@@ -53,7 +53,7 @@ const WhatNewOne: React.FC<Props> = ({ data, start, limit }) => {
   useEffect(() => {
     const fetchProducts = async () => {
       try {
-        const res = await fetch('https://www.thinkprint.shop/api/products-api') 
+        const res = await fetch('/api/products-api') 
         const result = await res.json()
 
         if (result.success && Array.isArray(result.data)) {

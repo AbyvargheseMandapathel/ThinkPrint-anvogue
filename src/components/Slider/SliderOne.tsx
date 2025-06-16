@@ -13,7 +13,7 @@ const SliderOne = () => {
 
     useEffect(() => {
         // Fetch banners from the API
-        fetch('https://www.thinkprint.shop/api/banner-api') 
+        fetch('/api/banner-api') 
             .then(response => response.json())
             .then(data => {
                 if (data.success) {

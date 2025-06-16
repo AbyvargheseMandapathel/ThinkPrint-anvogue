@@ -22,7 +22,7 @@ export default function Default() {
         const fetchData = async () => {
             try {
                 // Fetch products
-                const productsRes = await fetch('https://www.thinkprint.shop/api/products-api') 
+                const productsRes = await fetch('/api/products-api') 
                 const productsData = await productsRes.json()
 
                 let formattedProducts: ProductType[] = []
@@ -53,7 +53,7 @@ export default function Default() {
                 }
 
                 // Fetch categories
-                const categoriesRes = await fetch('https://www.thinkprint.shop/api/categories-api') 
+                const categoriesRes = await fetch('/api/categories-api') 
                 const categoriesData = await categoriesRes.json()
 
                 if (categoriesData.success && Array.isArray(categoriesData.data)) {

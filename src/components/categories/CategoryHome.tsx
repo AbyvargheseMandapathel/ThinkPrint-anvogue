@@ -13,7 +13,7 @@ const CategoryHome = () => {
     useEffect(() => {
         const fetchCategories = async () => {
             try {
-                const res = await fetch('https://www.thinkprint.shop/api/categories-api') 
+                const res = await fetch('/api/categories-api') 
                 const data = await res.json()
                 if (data.success) {
                     setCategories(data.data)

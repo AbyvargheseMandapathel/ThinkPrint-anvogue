@@ -495,6 +495,12 @@ const MenuOne: React.FC<Props> = ({ props }) => {
                         <Icon.MagnifyingGlass weight='bold' className='text-2xl' />
                         <span className="menu_bar-title caption2 font-semibold">Search</span>
                     </Link>
+                    <Link href={'/pages/contact'} className='menu_bar-link flex flex-col items-center gap-1'>
+                        <div className="icon relative">
+                            <Icon.PhoneCall weight='bold' className='text-2xl' />
+                        </div>
+                        <span className="menu_bar-title caption2 font-semibold">Contact Us</span>
+                    </Link>
                 </div>
             </div>
         </>

@@ -320,13 +320,15 @@ const MenuOne: React.FC<Props> = ({ props }) => {
                                     {/* Mobile Categories */}
                                     <li
                                         className={`${openSubNavMobile === 2 ? 'open' : ''}`}
-                                        onClick={() => handleOpenSubNavMobile(2)}
                                     >
-                                        <a href={''} className='text-xl font-semibold flex items-center justify-between mt-5'>Categories
+                                        <div 
+                                            className='text-xl font-semibold flex items-center justify-between mt-5 cursor-pointer'
+                                            onClick={() => handleOpenSubNavMobile(2)}
+                                        >Categories
                                             <span className='text-right'>
                                                 <Icon.CaretRight size={20} />
                                             </span>
-                                        </a>
+                                        </div>
                                         <div className="sub-nav-mobile">
                                             <div
                                                 className="back-btn flex items-center gap-3"

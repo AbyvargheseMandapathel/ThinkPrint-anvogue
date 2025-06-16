@@ -27,6 +27,9 @@ export default function RootLayout({
   return (
     <GlobalProvider>
       <html lang="en">
+        <head>
+          <link rel="icon" href="/logo-favicon.svg" type="image/svg+xml" />
+        </head>
         <body className={instrument.className}>
           {children}
           <ModalCart serverTimeLeft={serverTimeLeft} />

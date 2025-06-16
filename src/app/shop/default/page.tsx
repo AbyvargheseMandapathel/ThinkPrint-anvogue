@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useMemo } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
 import TopNavOne from '@/components/Header/TopNav/TopNavOne'
 import Menu from '@/components/Header/Menu/Menu'
@@ -10,25 +10,30 @@ import { ProductType, CategoryType } from '@/type/ProductType'
 
 export default function Default() {
     const searchParams = useSearchParams()
-    const type = searchParams.get('type') // e.g., "Gadgets"
-    const category = searchParams.get('category')
+    const router = useRouter()
 
     const [products, setProducts] = useState<ProductType[]>([])
     const [categories, setCategories] = useState<CategoryType[]>([])
     const [loading, setLoading] = useState(true)
+    const [error, setError] = useState<string | null>(null)
 
-    // Fetch products and categories
+    const type = searchParams.get('type')?.toLowerCase().replace(/\s+/g, '-') || null
+    const category = searchParams.get('category')
+
+    // Fetch data once on mount
     useEffect(() => {
         const fetchData = async () => {
             try {
+                setLoading(true)
+                setError(null)
+
                 // Fetch products
-                const productsRes = await fetch('/api/products-api') 
+                const productsRes = await fetch('/api/products-api')
+                if (!productsRes.ok) throw new Error("Failed to fetch products")
                 const productsData = await productsRes.json()
 
-                let formattedProducts: ProductType[] = []
-
-                if (productsData.success && Array.isArray(productsData.data)) {
-                    formattedProducts = productsData.data.map((item: any) => ({
+                const formattedProducts: ProductType[] = productsData.success && Array.isArray(productsData.data)
+                    ? productsData.data.map((item: any) => ({
                         id: item.id.toString(),
                         name: item.title,
                         price: item.price || 0,
@@ -39,8 +44,8 @@ export default function Default() {
                         description: item.short_description || '',
                         category: item.category_name,
                         type: item.subcategory_name.toLowerCase().replace(/\s+/g, '-'),
-                        gender: '', // placeholder if not available
-                        brand: '',
+                        gender: '', // Placeholder
+                        brand: '',  // Placeholder
                         sold: 0,
                         quantity: 1,
                         quantityPurchase: 0,
@@ -50,37 +55,53 @@ export default function Default() {
                         action: '',
                         slug: ''
                     }))
-                }
+                    : []
 
                 // Fetch categories
-                const categoriesRes = await fetch('/api/categories-api') 
+                const categoriesRes = await fetch('/api/categories-api')
+                if (!categoriesRes.ok) throw new Error("Failed to fetch categories")
                 const categoriesData = await categoriesRes.json()
 
-                if (categoriesData.success && Array.isArray(categoriesData.data)) {
-                    setCategories(categoriesData.data)
-                }
+                const formattedCategories: CategoryType[] = categoriesData.success && Array.isArray(categoriesData.data)
+                    ? categoriesData.data
+                    : []
 
-                // Set all products
                 setProducts(formattedProducts)
-            } catch (error) {
-                console.error("Error fetching data:", error)
+                setCategories(formattedCategories)
+            } catch (err: any) {
+                setError(err.message || "An error occurred while fetching data.")
+                console.error(err)
             } finally {
                 setLoading(false)
             }
         }
 
         fetchData()
-    }, [])
+    }, []) // Run only once on mount
 
-    // Apply filter when `type` changes
-    const filteredProducts = type
-        ? products.filter(p => p.type === type.toLowerCase().replace(/\s+/g, '-'))
-        : products
+    const filteredProducts = useMemo(() => {
+        if (!products.length) return []
+        return type ? products.filter(p => p.type === type) : products
+    }, [products, type])
 
     if (loading) {
         return (
             <div className="loading-container flex items-center justify-center h-screen">
                 <div className="loading-spinner">Loading...</div>
+            </div>
+        )
+    }
+
+    if (error) {
+        return (
+            <div className="error-message text-red-600 text-center p-8">
+                <p>{error}</p>
+                <button
+                    onClick={() => router.refresh()}
+                    className="mt-4 px-4 py-2 bg-blue-500 text-white rounded"
+                >
+                    Retry
+                </button>
             </div>
         )
     }

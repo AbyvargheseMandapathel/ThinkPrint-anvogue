@@ -66,9 +66,6 @@ const Footer = () => {
                                         <div className="text-button-uppercase pb-3">Information</div>
                                         <Link className="caption1 has-line-before duration-300 w-fit" href="/pages/contact">Contact us</Link>
                                         <Link className="caption1 has-line-before duration-300 w-fit pt-2" href="#!">About Us</Link>
-                                        <Link className="caption1 has-line-before duration-300 w-fit pt-2" href="/my-account">My Account</Link>
-                                        <Link className="caption1 has-line-before duration-300 w-fit pt-2" href="/order-tracking">Order & Returns</Link>
-                                        <Link className="caption1 has-line-before duration-300 w-fit pt-2" href="/pages/faqs">FAQs</Link>
                                     </div>
 
                                     {/* Quick Shop */}

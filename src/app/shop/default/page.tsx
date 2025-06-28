@@ -18,7 +18,7 @@ export default function Default() {
     const [error, setError] = useState<string | null>(null)
 
     const type = searchParams.get('type')?.toLowerCase().replace(/\s+/g, '-') || null
-    const category = searchParams.get('category')
+    const category = searchParams.get('category')?.toLowerCase().replace(/\s+/g, '-') || null
 
     // Fetch data once on mount
     useEffect(() => {
@@ -42,9 +42,8 @@ export default function Default() {
                         new: false,
                         image: item.image,
                         description: item.short_description || '',
-                        category: item.category_name,
-                        type: item.subcategory_name.toLowerCase().replace(/\s+/g, '-'),
-                        gender: '', // Placeholder
+                        category: item.category_name ? item.category_name.toLowerCase().replace(/\s+/g, '-') : null,
+                        type: item.subcategory_name ? item.subcategory_name.toLowerCase().replace(/\s+/g, '-') : null,
                         brand: '',  // Placeholder
                         sold: 0,
                         quantity: 1,
@@ -79,20 +78,31 @@ export default function Default() {
         fetchData()
     }, []) // Run only once on mount
 
-    useEffect(() => {
-        const type = searchParams.get('type')
-        const category = searchParams.get('category')
-        const gender = searchParams.get('gender')
-        // Fetch or filter products based on query params
-        fetch(`/api/products?type=${type || ''}&category=${category || ''}&gender=${gender || ''}`)
-            .then(res => res.json())
-            .then(data => setProducts(data))
-    }, [searchParams.toString()]) // re-run when query changes
-
+    // Filter products based on query params
     const filteredProducts = useMemo(() => {
         if (!products.length) return []
-        return type ? products.filter(p => p.type === type) : products
-    }, [products, type])
+
+        // Both category and type present
+        if (category && type) {
+            return products.filter(
+                p => p.category === category && p.type === type
+            )
+        }
+        // Only category present
+        if (category) {
+            return products.filter(
+                p => p.category === category
+            )
+        }
+        // Only type present
+        if (type) {
+            return products.filter(
+                p => p.type === type
+            )
+        }
+        // Neither present, return all
+        return products
+    }, [products, category, type])
 
     if (loading) {
         return (

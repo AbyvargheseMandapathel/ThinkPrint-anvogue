@@ -28,7 +28,7 @@ export default function RootLayout({
     <GlobalProvider>
       <html lang="en">
         <head>
-          <link rel="icon" href="/logo-favicon.svg" type="image/svg+xml" />
+          <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
         </head>
         <body className={instrument.className}>
           {children}

@@ -22,13 +22,13 @@ const Product: React.FC<ProductProps> = ({ data }) => {
   return (
     <div className="product-card group relative overflow-hidden rounded-2xl bg-white shadow-md transition-transform duration-300 hover:shadow-xl">
       {/* Product Image */}
-      <div className="relative aspect-[3/4] overflow-hidden bg-gray-100">
+      <div className="relative w-full" style={{ aspectRatio: '1.2/1' }}>
         <Image
           src={data.image}
           alt={data.name}
           fill
           sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-          className="object-cover object-center transition-transform duration-500 group-hover:scale-105"
+          className="object-contain object-center transition-transform duration-500 group-hover:scale-105"
         />
         {/* Badges like "Sale", "New" go here */}
         {data.sale && (

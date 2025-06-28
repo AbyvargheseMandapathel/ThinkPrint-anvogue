@@ -287,7 +287,7 @@ const Default: React.FC<Props> = ({ data, productId }) => {
             <div key={index} className="item flex gap-1 text-secondary mt-1">
               <Icon.Dot size={28} />
               <p>
-                <strong>{spec.key}:</strong> {spec.value || 'N/A'}
+                <strong>{spec.key}</strong> {spec.value || ''}
               </p>
             </div>
           ))

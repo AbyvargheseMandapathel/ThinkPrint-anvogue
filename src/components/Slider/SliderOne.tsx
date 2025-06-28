@@ -42,7 +42,7 @@ const SliderOne = () => {
                             <SwiperSlide key={index}>
                                 <div className="slider-item h-full w-full relative">
                                     {/* Make the entire slide clickable */}
-                                    <Link href={banner.cta} legacyBehavior>
+                                    <Link href={banner.cta_link} legacyBehavior>
   <a className="block h-full w-full relative">
     <Image
       src={banner.image_url}

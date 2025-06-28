@@ -79,6 +79,16 @@ export default function Default() {
         fetchData()
     }, []) // Run only once on mount
 
+    useEffect(() => {
+        const type = searchParams.get('type')
+        const category = searchParams.get('category')
+        const gender = searchParams.get('gender')
+        // Fetch or filter products based on query params
+        fetch(`/api/products?type=${type || ''}&category=${category || ''}&gender=${gender || ''}`)
+            .then(res => res.json())
+            .then(data => setProducts(data))
+    }, [searchParams.toString()]) // re-run when query changes
+
     const filteredProducts = useMemo(() => {
         if (!products.length) return []
         return type ? products.filter(p => p.type === type) : products

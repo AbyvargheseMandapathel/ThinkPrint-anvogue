@@ -176,7 +176,7 @@ const Default: React.FC<Props> = ({ data, productId }) => {
                                             width={1000}
                                             height={1000}
                                             alt='prd-img'
-                                            className='w-full aspect-[3/4] object-cover'
+                                            className='w-full aspect-[3/4] object-contain' // changed from object-cover to object-contain
                                         />
                                     </SwiperSlide>
                                 ))}
@@ -201,7 +201,7 @@ const Default: React.FC<Props> = ({ data, productId }) => {
                                             width={1000}
                                             height={1000}
                                             alt='prd-img'
-                                            className='w-full aspect-[3/4] object-cover rounded-xl'
+                                            className='w-full aspect-[3/4] object-contain rounded-xl' // changed from object-cover to object-contain
                                         />
                                     </SwiperSlide>
                                 ))}
@@ -238,7 +238,7 @@ const Default: React.FC<Props> = ({ data, productId }) => {
                                                 width={1000}
                                                 height={1000}
                                                 alt='prd-img'
-                                                className='w-full aspect-[3/4] object-cover rounded-xl'
+                                                className='w-full aspect-[3/4] object-contain rounded-xl' // changed from object-cover to object-contain
                                                 onClick={(e) => {
                                                     e.stopPropagation(); // prevent
                                                 }}

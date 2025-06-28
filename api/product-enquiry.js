@@ -16,15 +16,17 @@ export default async function handler(req, res) {
 
   res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
-  res.setHeader('Content-Type', 'application/json'); // Added
+  res.setHeader('Content-Type', 'application/json'); 
 
   if (req.method === 'OPTIONS') {
-    return res.status(200).json({ success: true }); // Changed
+    return res.status(200).json({ success: true });
   }
 
   if (req.method !== 'POST') {
     return res.status(405).json({ error: `Method ${req.method} Not Allowed` });
   }
+
+  console.log("Body:", req.body);
 
   const { name, email, phoneNumber, message, product } = req.body;
 
@@ -39,7 +41,7 @@ export default async function handler(req, res) {
       secure: true,
       auth: {
         user: 'sales@thinkprint.shop',
-        pass: 'MaxHost@9266', // Use env var in production
+        pass: 'MaxHost@9266', 
       },
     });
 

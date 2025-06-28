@@ -9,18 +9,18 @@ import 'swiper/css/bundle';
 import 'swiper/css/effect-fade';
 
 const SliderOne = () => {
-    const [banners, setBanners] = useState([]);
+    const [products_banner, setproducts_banner] = useState([]);
 
     useEffect(() => {
-        // Fetch banners from the API
+        // Fetch products_banner from the API
         fetch('/api/banner-api') 
             .then(response => response.json())
             .then(data => {
                 if (data.success) {
-                    setBanners(data.data);
+                    setproducts_banner(data.data);
                 }
             })
-            .catch(error => console.error('Error fetching banners:', error));
+            .catch(error => console.error('Error fetching products_banner:', error));
     }, []);
 
     return (
@@ -38,7 +38,7 @@ const SliderOne = () => {
                             delay: 4000,
                         }}
                     >
-                        {banners.map((banner, index) => (
+                        {products_banner.map((banner, index) => (
                             <SwiperSlide key={index}>
                                 <div className="slider-item h-full w-full relative">
                                     {/* Make the entire slide clickable */}

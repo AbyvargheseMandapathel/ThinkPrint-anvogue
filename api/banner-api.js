@@ -34,13 +34,13 @@ export default async function handler(req, res) {
   try {
     connection = await mysql.createConnection(dbConfig);
 
-    // ✅ GET: Fetch all banners
+    // ✅ GET: Fetch all products_banner
     if (req.method === 'GET') {
-      const [rows] = await connection.execute('SELECT * FROM banners ORDER BY id DESC');
+      const [rows] = await connection.execute('SELECT * FROM products_banner ORDER BY id DESC');
       await connection.end();
       return res.status(200).json({
         success: true,
-        message: 'Banners fetched successfully',
+        message: 'products_banner fetched successfully',
         data: rows
       });
     }
@@ -55,7 +55,7 @@ export default async function handler(req, res) {
       }
 
       const [result] = await connection.execute(
-        `INSERT INTO banners (title, subtitle, image_url, banner_type, is_active)
+        `INSERT INTO products_banner (title, subtitle, image_url, banner_type, is_active)
          VALUES (?, ?, ?, ?, ?)`,
         [title, subtitle || null, image_url, banner_type, is_active]
       );
@@ -76,7 +76,7 @@ export default async function handler(req, res) {
         return res.status(400).json({ success: false, message: 'Banner ID is required' });
       }
 
-      const [result] = await connection.execute('DELETE FROM banners WHERE id = ?', [id]);
+      const [result] = await connection.execute('DELETE FROM products_banner WHERE id = ?', [id]);
       await connection.end();
 
       if (result.affectedRows === 0) {

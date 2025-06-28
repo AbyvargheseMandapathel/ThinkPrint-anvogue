@@ -370,7 +370,7 @@ const MenuOne: React.FC<Props> = ({ props }) => {
                                                         </div>
                                                     ))}
                                                 </div>
-                                                {/* Mobile banners */}
+                                                {/* Mobile products_banner */}
                                                 <div className="banner-ads-block grid sm:grid-cols-2 items-center gap-6 pt-6">
                                                     <div className="banner-ads-item bg-linear rounded-2xl relative overflow-hidden" onClick={() => handleTypeClick('swimwear')}>
                                                         <div className="text-content py-14 pl-8 relative z-[1]">
